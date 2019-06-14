@@ -11,13 +11,15 @@ import { ModuloRoteamento } from './app-routing.module';
 import { CmailFormFieldComponent } from './modules/cmail-form-group/cmail-form-field/cmail-form-field.component'
 import { HttpClientModule } from '@angular/common/http';
 import { SharedComponentsModule } from "./components/shared-components.module";
+import { filtroPorAssunto } from './modules/caixa-de-entrada/filtro-por-assunto.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     FooterComponent,
     CaixaDeEntradaComponent,
-    CmailFormFieldComponent
+    CmailFormFieldComponent,
+    filtroPorAssunto
     
 
   ],

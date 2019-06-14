@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { EmailService } from 'src/app/services/email.service';
+import { PageDataService } from 'src/app/services/page.service';
+import { HeaderDataService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'cmail-caixa-de-entrada',
@@ -24,6 +26,12 @@ export class CaixaDeEntradaComponent implements OnInit{
     assunto: '',
     conteudo: ''
   }
+  termoParaFiltro: string = '';
+ 
+
+
+  constructor(private emailService: EmailService,
+    private pageDataService: PageDataService, private headerService: HeaderDataService){}
 
   ngOnInit(){
     this.emailService.listar()
@@ -31,14 +39,17 @@ export class CaixaDeEntradaComponent implements OnInit{
       lista => {
         console.log(lista )
         this.emailList = lista;
-      })
+      });
+
+      this.pageDataService.defineTitulo('Caixa de Entrada - CMail');
+      this.headerService.valorDoFiltro
+      .subscribe(novoValor => this.termoParaFiltro = novoValor)
   }
 
   private _isNewEmailFormOpen = false;
 
 
 
-  constructor(private emailService: EmailService){}
   get isNewEmailFormOpen() {
     return this._isNewEmailFormOpen;
   }
@@ -72,6 +83,22 @@ export class CaixaDeEntradaComponent implements OnInit{
 
     //formEmail.reset();
 
+  }
+
+  handleRemoveEmail(eventoVaiRemover, emailId){
+    console.log('eventoVaiRemover')
+    if(eventoVaiRemover.status === 'removing'){
+      this.emailService
+        .deletar(emailId)
+        .subscribe(res => {
+          console.log(res);
+
+          //remover o email da lista de demais depois dela ser apagada pela API
+          this.emailList = this.emailList.filter(email => email.id != emailId);
+        }
+        , err => console.error(err)
+      )
+    }
   }
 
 }
